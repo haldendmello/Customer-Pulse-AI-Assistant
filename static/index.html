@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        /* General styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f5;
+        }
+
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+            height: 600px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+        }
+
+        /* Chat header */
+        #chat-header {
+            background-color: #4a76a8;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Chatbox styling */
+        #chatbox {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+
+        /* Message styling */
+        .message {
+    margin: 5px 0;  /* Reduced margin to minimize spacing */
+    display: flex;
+    align-items: flex-end;
+    max-width: 100%;
+}
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.user .bubble {
+            background-color: #4a76a8;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .message.bot .bubble {
+            background-color: #e1e8ed;
+            color: #333;
+            align-self: flex-start;
+        }
+
+        .bubble {
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+
+        /* Input section styling */
+        #input-container {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            background-color: #ffffff;
+        }
+
+        #userInput {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 1em;
+        }
+
+        #sendButton {
+            padding: 10px 15px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 20px;
+            background-color: #4a76a8;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #sendButton:hover {
+            background-color: #3c5a80;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-header">Customer Pulse - Powered by AI</div>
+        <div id="chatbox"></div>
+        <div id="input-container">
+            <input type="text" id="userInput" placeholder="Type a message..." />
+            <button id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        var socket = io.connect('http://localhost:5000');
+
+        function sendMessage() {
+            var input = document.getElementById('userInput');
+            var message = input.value;
+            if (message.trim() !== '') {
+                displayMessage(message, 'user');
+                socket.emit('user_message', { message: message });
+                input.value = '';
+            }
+        }
+
+        socket.on('bot_response', function(data) {
+            displayMessage(data.message, 'bot');
+        });
+
+        function displayMessage(message, type) {
+            var chatbox = document.getElementById('chatbox');
+            var messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', type);
+            var bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            bubble.textContent = message;
+            messageDiv.appendChild(bubble);
+            chatbox.appendChild(messageDiv);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
