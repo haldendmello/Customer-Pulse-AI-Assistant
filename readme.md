@@ -39,8 +39,8 @@ user_interface.py
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/financial-assistant.git
-    cd financial-assistant
+    git clone https://github.com/username/Customer-Pulse-AI-Assistant.git
+    cd Customer-Pulse-AI-Assistant
     ```
 
 2. Install the required Python packages:
